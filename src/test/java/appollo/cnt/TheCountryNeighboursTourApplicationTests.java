@@ -1,4 +1,4 @@
-package appollo13.cnt;
+package appollo.cnt;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
