@@ -26,5 +26,3 @@ Bonuses :
 1. Secure API with Google Oauth2 Login
 
 2. Implement UI Login form with Google Oauth2
-
-https://restcountries.eu/#api-endpoints-all
