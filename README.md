@@ -1,6 +1,5 @@
-deVRealm
-
-The Country Neighbours Tour.
+deVRealm: The Country Neighbours Tour
+-------------------------------------
 
 Angel likes to travel around neighbor countries. To help him plan his next trip you need to create a 
 REST API accepting the following request parameters: Starting country Budget per country (equal for 
@@ -33,3 +32,8 @@ Bonuses :
 1. Secure API with Google Oauth2 Login
 
 2. Implement UI Login form with Google Oauth2
+
+
+More
+----
++ the Input Currency is optional, as it can be extracted from the Starting country default/primary/first currency
