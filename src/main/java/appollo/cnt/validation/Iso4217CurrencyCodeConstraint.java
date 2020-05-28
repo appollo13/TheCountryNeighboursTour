@@ -19,4 +19,6 @@ public @interface Iso4217CurrencyCodeConstraint {
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
+
+    boolean required() default true;
 }

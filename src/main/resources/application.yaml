@@ -1,1 +1,10 @@
-
+spring.application.name: TheCountryNeighboursTour
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 1000
+        readTimeout: 500
+    countries:
+      name: "restcountries.eu"
+      url: "https://restcountries.eu/rest/v2"
