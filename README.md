@@ -38,7 +38,6 @@ TODO
 + testing
 + bonus-1
 + bonus-2
-+ circuit breaker
 + perf optimizations
 + final clean-up / code polish
 

@@ -10,9 +10,11 @@ import appollo.cnt.model.TripPlanResponse.NeighborCountry;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class TripService {
 
@@ -30,26 +32,33 @@ public class TripService {
 
         // input validation and conversions
         CountryResponse startingCountry = countryService.resolveCountryByName(startingCountryName);
-        if (inputCurrency == null) {
-            inputCurrency = startingCountry.getCurrencies().get(0).getCode();
-        }
         int neighbourCountriesCount = startingCountry.getBorders().size();
         List<CountryResponse> neighborCountries = new ArrayList<>(neighbourCountriesCount);
         for (String neighborCountryCode : startingCountry.getBorders()) {
             neighborCountries.add(countryService.resolveCountryByCode(neighborCountryCode));
         }
-        ExchangeRatesResponse exchangeRatesResponse = exchangeRatesClient.getCountryByName(inputCurrency);
+
+        if (inputCurrency == null) {
+            inputCurrency = startingCountry.getCurrencies().get(0).getCode();
+        }
+        ExchangeRatesResponse exchangeRatesResponse;
+        try {
+            exchangeRatesResponse = exchangeRatesClient.getCountryByName(inputCurrency);
+        } catch (Exception e) {
+            log.warn("No ExchangeRates!", e);
+            exchangeRatesResponse = null;
+        }
 
         // the calculations
-        int budgetPerRoundRound = neighbourCountriesCount * budgetPerCountry;
-        int completeRoundTrips = 0;
+        int budgetPerTrip = neighbourCountriesCount * budgetPerCountry;
+        int numberOfTrips = 0;
         if (neighbourCountriesCount != 0) { // corner case for island countries
-            completeRoundTrips = totalBudget / budgetPerRoundRound;
+            numberOfTrips = totalBudget / budgetPerTrip;
         }
-        int leftoverBudget = totalBudget - (completeRoundTrips * budgetPerRoundRound);
-        int totalBudgetPerCountry = budgetPerCountry * completeRoundTrips;
-        List<NeighborCountry> budgets = calculateLocalBudgets(totalBudgetPerCountry, inputCurrency, neighborCountries,
-            exchangeRatesResponse);
+        int leftoverBudget = totalBudget - (numberOfTrips * budgetPerTrip);
+        int totalBudgetPerCountry = budgetPerCountry * numberOfTrips;
+        List<NeighborCountry> budgets = calculateBudgetInLocalCurrencies(
+            totalBudgetPerCountry, inputCurrency, neighborCountries, exchangeRatesResponse);
 
         // the response
         return TripPlanResponse.builder()
@@ -57,33 +66,37 @@ public class TripService {
             .budgetPerCountry(budgetPerCountry)
             .totalBudget(totalBudget)
             .inputCurrency(inputCurrency)
-            .roundTrips(completeRoundTrips)
+            .roundTrips(numberOfTrips)
             .leftoverBudget(leftoverBudget)
             .neighborCountries(budgets)
             .build();
     }
 
-    private List<NeighborCountry> calculateLocalBudgets(int totalBudgetPerCountry, String inputCurrency,
-        List<CountryResponse> neighborCountries, ExchangeRatesResponse exchangeRatesResponse) {
-        List<NeighborCountry> neighborCountriesWithBudget = new ArrayList<>(neighborCountries.size());
-        for (CountryResponse neighbor : neighborCountries) {
+    private List<NeighborCountry> calculateBudgetInLocalCurrencies(int totalBudgetPerCountry, String inputCurrency,
+        List<CountryResponse> countries, ExchangeRatesResponse exchangeRatesResponse) {
+
+        List<NeighborCountry> neighborCountries = new ArrayList<>(countries.size());
+        for (CountryResponse neighbor : countries) {
             NeighborCountry neighborCountry = new NeighborCountry(neighbor);
             List<Budget> budgets = neighbor.getCurrencies().stream()
-                .map(currency -> getBudget(totalBudgetPerCountry, inputCurrency, exchangeRatesResponse, currency))
+                .map(currency ->
+                    getBudgetInLocalCurrency(totalBudgetPerCountry, inputCurrency, currency, exchangeRatesResponse))
                 .collect(Collectors.toList());
             neighborCountry.setBudgets(budgets);
-            neighborCountriesWithBudget.add(neighborCountry);
+            neighborCountries.add(neighborCountry);
         }
-        return neighborCountriesWithBudget;
+        return neighborCountries;
     }
 
-    private Budget getBudget(int totalBudgetPerCountry, String inputCurrency,
-        ExchangeRatesResponse exchangeRatesResponse, Currency currency) {
+    private Budget getBudgetInLocalCurrency(int totalBudgetPerCountry, String inputCurrency,
+        Currency currency, ExchangeRatesResponse exchangeRatesResponse) {
+
         Double rate = null;
         if (exchangeRatesResponse != null) {
             rate = exchangeRatesResponse.getRates().get(currency.getCode());
         }
         if (rate == null) {
+            log.debug("No ExchangeRates! Using inputCurrency.");
             return new Budget(totalBudgetPerCountry, inputCurrency);
         }
         return new Budget((int) (totalBudgetPerCountry * rate), currency.getCode());
