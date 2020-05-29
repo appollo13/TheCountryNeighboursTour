@@ -1,6 +1,5 @@
 package appollo.cnt.service;
 
-import appollo.cnt.client.CountriesClient;
 import appollo.cnt.client.ExchangeRatesClient;
 import appollo.cnt.model.CountryResponse;
 import appollo.cnt.model.CountryResponse.Currency;
@@ -12,18 +11,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TripService {
 
-    private final CountriesClient countriesClient;
+    private final CountryService countryService;
     private final ExchangeRatesClient exchangeRatesClient;
 
     @Autowired
-    public TripService(CountriesClient countriesClient, ExchangeRatesClient exchangeRatesClient) {
-        this.countriesClient = countriesClient;
+    public TripService(CountryService countryService, ExchangeRatesClient exchangeRatesClient) {
+        this.countryService = countryService;
         this.exchangeRatesClient = exchangeRatesClient;
     }
 
@@ -31,20 +29,23 @@ public class TripService {
         String inputCurrency) {
 
         // input validation and conversions
-        CountryResponse startingCountry = resolveCountryByName(startingCountryName);
+        CountryResponse startingCountry = countryService.resolveCountryByName(startingCountryName);
         if (inputCurrency == null) {
             inputCurrency = startingCountry.getCurrencies().get(0).getCode();
         }
         int neighbourCountriesCount = startingCountry.getBorders().size();
         List<CountryResponse> neighborCountries = new ArrayList<>(neighbourCountriesCount);
         for (String neighborCountryCode : startingCountry.getBorders()) {
-            neighborCountries.add(resolveCountryByCode(neighborCountryCode));
+            neighborCountries.add(countryService.resolveCountryByCode(neighborCountryCode));
         }
         ExchangeRatesResponse exchangeRatesResponse = exchangeRatesClient.getCountryByName(inputCurrency);
 
         // the calculations
         int budgetPerRoundRound = neighbourCountriesCount * budgetPerCountry;
-        int completeRoundTrips = totalBudget / budgetPerRoundRound;
+        int completeRoundTrips = 0;
+        if (neighbourCountriesCount != 0) { // corner case for island countries
+            completeRoundTrips = totalBudget / budgetPerRoundRound;
+        }
         int leftoverBudget = totalBudget - (completeRoundTrips * budgetPerRoundRound);
         int totalBudgetPerCountry = budgetPerCountry * completeRoundTrips;
         List<NeighborCountry> budgets = calculateLocalBudgets(totalBudgetPerCountry, inputCurrency, neighborCountries,
@@ -86,24 +87,5 @@ public class TripService {
             return new Budget(totalBudgetPerCountry, inputCurrency);
         }
         return new Budget((int) (totalBudgetPerCountry * rate), currency.getCode());
-    }
-
-    private CountryResponse resolveCountryByName(String name) {
-        List<CountryResponse> countriesByName = countriesClient.getCountryByName(name);
-        if (countriesByName == null || countriesByName.isEmpty()) {
-            return resolveCountryByCode(name);
-        }
-        if (countriesByName.size() > 1) {
-            throw new RuntimeException(HttpStatus.CONFLICT.toString());
-        }
-        return countriesByName.get(0);
-    }
-
-    private CountryResponse resolveCountryByCode(String code) {
-        CountryResponse country = countriesClient.getCountryByCode(code);
-        if (country == null) {
-            throw new RuntimeException(HttpStatus.NOT_FOUND.toString());
-        }
-        return country;
     }
 }
