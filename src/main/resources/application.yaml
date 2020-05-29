@@ -8,3 +8,6 @@ feign:
     countries:
       name: "restcountries.eu"
       url: "https://restcountries.eu/rest/v2"
+    exchangerates:
+      name: "api.exchangeratesapi.io"
+      url: "https://api.exchangeratesapi.io/latest"

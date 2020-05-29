@@ -33,6 +33,16 @@ Bonuses :
 
 2. Implement UI Login form with Google Oauth2
 
+TODO
+----
++ error handling
++ testing
++ caching
++ bonus-1
++ bonus-2
++ circuit breaker
++ perf optimizations
++ final clean-up / code polish
 
 More
 ----

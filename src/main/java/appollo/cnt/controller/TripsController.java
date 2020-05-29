@@ -28,8 +28,6 @@ public class TripsController {
         this.tripService = tripService;
     }
 
-    //TODO error handling
-
     @PostMapping(value = "/plan", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public TripPlanResponse planATrip(
