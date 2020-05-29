@@ -4,6 +4,7 @@ import appollo.cnt.client.CountriesClient;
 import appollo.cnt.model.CountryResponse;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ public class CountryService {
         this.countriesClient = countriesClient;
     }
 
+    @Cacheable("countries")
     public CountryResponse resolveCountryByName(String name) {
         if (name.length() == 2 || name.length() == 3) {
             CountryResponse country = countriesClient.getCountryByCode(name);
@@ -35,6 +37,7 @@ public class CountryService {
         return countriesByName.get(0);
     }
 
+    @Cacheable("countries")
     public CountryResponse resolveCountryByCode(String code) {
         CountryResponse country = countriesClient.getCountryByCode(code);
         if (country == null) {

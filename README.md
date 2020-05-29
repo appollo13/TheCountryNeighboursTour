@@ -37,7 +37,6 @@ TODO
 ----
 + error handling
 + testing
-+ caching
 + bonus-1
 + bonus-2
 + circuit breaker
