@@ -35,7 +35,6 @@ Bonuses :
 
 TODO
 ----
-+ error handling
 + testing
 + bonus-1
 + bonus-2

@@ -3,8 +3,8 @@ feign:
   client:
     config:
       default:
-        connectTimeout: 1000
-        readTimeout: 500
+        connectTimeout: 2000
+        readTimeout: 1000
     countries:
       name: "restcountries.eu"
       url: "https://restcountries.eu/rest/v2"
