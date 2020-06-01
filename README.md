@@ -38,8 +38,6 @@ TODO
 + testing
 + bonus-1
 + bonus-2
-+ perf optimizations
-+ final clean-up / code polish
 
 More
 ----

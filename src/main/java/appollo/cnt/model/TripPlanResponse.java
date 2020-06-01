@@ -1,41 +1,29 @@
 package appollo.cnt.model;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import java.util.List;
+import java.util.Map;
 import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.Value;
 
-@Data
+@Value
 @Builder
 public class TripPlanResponse {
 
-    private CountryNameAndCodes startingCountry;
-    private int budgetPerCountry;
-    private int totalBudget;
-    private String inputCurrency;
+    CountryNameAndCodes startingCountry;
+    int budgetPerCountry;
+    int totalBudget;
+    String inputCurrency;
 
-    private int roundTrips;
-    private int leftoverBudget;
-    private List<NeighborCountry> neighborCountries;
-
-    @Data
-    @EqualsAndHashCode(callSuper = true)
-    public static class NeighborCountry extends CountryNameAndCodes {
-
-        private List<Budget> budgets;
-
-        public NeighborCountry(CountryNameAndCodes countryNameAndCodes) {
-            setName(countryNameAndCodes.getName());
-            setAlpha2Code(countryNameAndCodes.getAlpha2Code());
-            setAlpha3Code(countryNameAndCodes.getAlpha3Code());
-        }
-    }
+    int numberOfTrips;
+    int leftoverBudget;
+    List<NeighborCountry> neighborCountries;
 
     @Value
-    public static class Budget {
+    public static class NeighborCountry {
 
-        int amount;
-        String currency;
+        @JsonUnwrapped
+        CountryNameAndCodes country;
+        Map<String, Integer> budget;
     }
 }
