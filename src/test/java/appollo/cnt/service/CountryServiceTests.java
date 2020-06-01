@@ -24,7 +24,7 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class CountryServiceTest {
+public class CountryServiceTests {
 
     @Mock
     private CountriesClient countriesClient;
