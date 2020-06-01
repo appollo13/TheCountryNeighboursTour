@@ -61,7 +61,9 @@ public class ExchangeRatesService {
             currencies.forEach(currency -> {
                 Double rate = exchangeRatesResponse.getRates().get(currency.getCode());
                 if (rate != null) {
-                    budgets.put(currency.getCode(), totalBudgetPerCountry * rate);
+                    double value = totalBudgetPerCountry * rate;
+                    value = (double) Math.round(value * 100) / 100;
+                    budgets.put(currency.getCode(), value);
                 }
             });
         }
