@@ -39,3 +39,6 @@ More
 * (+) The Input Currency is optional, as it can be extracted from the Starting country default/primary/first currency
 * (-) More tests should be added
 * (!) the bonus functionality that's related to Security with Google OAuth2 can be found in branch **"origin/feature/Bonus_OAuth2-with-Google"**
+    * endpoint method is changed to GET, so it's easier to test via web browser
+    * as a result, the controller tests are broken
+    * security specific tests should be added
