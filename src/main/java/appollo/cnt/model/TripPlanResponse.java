@@ -24,6 +24,6 @@ public class TripPlanResponse {
 
         @JsonUnwrapped
         CountryNameAndCodes country;
-        Map<String, Integer> budget;
+        Map<String, Double> budget;
     }
 }

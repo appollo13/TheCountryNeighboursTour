@@ -33,12 +33,9 @@ Bonuses :
 
 2. Implement UI Login form with Google Oauth2
 
-TODO
-----
-+ testing
-+ bonus-1
-+ bonus-2
 
 More
 ----
-+ the Input Currency is optional, as it can be extracted from the Starting country default/primary/first currency
+* (+) The Input Currency is optional, as it can be extracted from the Starting country default/primary/first currency
+* (-) More tests should be added
+* (!) the bonus functionality that's related to Security with Google OAuth2 can be found in branch **"origin/feature/Bonus_OAuth2-with-Google"**
