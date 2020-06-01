@@ -39,3 +39,12 @@ More
 * (+) The Input Currency is optional, as it can be extracted from the Starting country default/primary/first currency
 * (-) More tests should be added
 * (!) the bonus functionality that's related to Security with Google OAuth2 can be found in branch **"origin/feature/Bonus_OAuth2-with-Google"**
+
+
+Example Requests
+----------------
+* http://localhost:8080/trips/plan?startingCountry=BG&budgetPerCountry=100&totalBudget=1200&inputCurrency=BGN
+* http://localhost:8080/trips/plan?startingCountry=BG&budgetPerCountry=100&totalBudget=1200
+* http://localhost:8080/trips/plan?startingCountry=UA&budgetPerCountry=100&totalBudget=1200&inputCurrency=EUR
+* http://localhost:8080/trips/plan?startingCountry=VA&budgetPerCountry=100&totalBudget=1200
+* http://localhost:8080/trips/plan?startingCountry=MT&budgetPerCountry=100&totalBudget=1200
