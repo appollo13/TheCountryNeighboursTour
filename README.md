@@ -42,3 +42,12 @@ More
     * endpoint method is changed to GET, so it's easier to test via web browser
     * as a result, the controller tests are broken
     * security specific tests should be added
+
+
+Example Requests
+----------------
+* http://localhost:8080/trips/plan?startingCountry=BG&budgetPerCountry=100&totalBudget=1200&inputCurrency=BGN
+* http://localhost:8080/trips/plan?startingCountry=BG&budgetPerCountry=100&totalBudget=1200
+* http://localhost:8080/trips/plan?startingCountry=UA&budgetPerCountry=100&totalBudget=1200&inputCurrency=EUR
+* http://localhost:8080/trips/plan?startingCountry=VA&budgetPerCountry=100&totalBudget=1200
+* http://localhost:8080/trips/plan?startingCountry=MT&budgetPerCountry=100&totalBudget=1200
