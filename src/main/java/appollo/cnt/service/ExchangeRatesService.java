@@ -2,6 +2,7 @@ package appollo.cnt.service;
 
 import appollo.cnt.client.ExchangeRatesClient;
 import appollo.cnt.model.CountryResponse;
+import appollo.cnt.model.CountryResponse.Currency;
 import appollo.cnt.model.ExchangeRatesResponse;
 import appollo.cnt.model.TripPlanResponse.NeighborCountry;
 import java.util.Collections;
@@ -35,7 +36,7 @@ public class ExchangeRatesService {
 
         return countries.stream()
             .map(neighbor -> {
-                Map<String, Integer> budget = calculateBudgetInLocalCurrencies(totalBudgetPerCountry, inputCurrency,
+                Map<String, Double> budget = calculateBudgetInLocalCurrencies(totalBudgetPerCountry, inputCurrency,
                     exchangeRatesResponse, neighbor);
                 return new NeighborCountry(neighbor.getCountry(), budget);
             })
@@ -44,22 +45,23 @@ public class ExchangeRatesService {
 
     private ExchangeRatesResponse getExchangeRatesResponse(String inputCurrency) {
         try {
-            return exchangeRatesClient.getCountryByName(inputCurrency);
+            return exchangeRatesClient.getExchangeRatesResponse(inputCurrency);
         } catch (Exception e) {
             log.warn("No ExchangeRates!", e);
             return null;
         }
     }
 
-    private Map<String, Integer> calculateBudgetInLocalCurrencies(int totalBudgetPerCountry, String inputCurrency,
+    private Map<String, Double> calculateBudgetInLocalCurrencies(double totalBudgetPerCountry, String inputCurrency,
         ExchangeRatesResponse exchangeRatesResponse, CountryResponse neighbor) {
 
-        Map<String, Integer> budgets = new HashMap<>(neighbor.getCurrencies().size());
+        List<Currency> currencies = neighbor.getCurrencies();
+        Map<String, Double> budgets = new HashMap<>(currencies.size());
         if (exchangeRatesResponse != null) {
-            neighbor.getCurrencies().forEach(currency -> {
+            currencies.forEach(currency -> {
                 Double rate = exchangeRatesResponse.getRates().get(currency.getCode());
                 if (rate != null) {
-                    budgets.put(currency.getCode(), (int) (totalBudgetPerCountry * rate));
+                    budgets.put(currency.getCode(), totalBudgetPerCountry * rate);
                 }
             });
         }

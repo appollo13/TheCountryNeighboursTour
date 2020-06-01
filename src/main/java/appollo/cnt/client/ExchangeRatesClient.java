@@ -10,5 +10,5 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface ExchangeRatesClient {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    ExchangeRatesResponse getCountryByName(@RequestParam("base") String base);
+    ExchangeRatesResponse getExchangeRatesResponse(@RequestParam("base") String base);
 }
