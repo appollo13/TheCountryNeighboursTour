@@ -1,4 +1,8 @@
 spring.application.name: TheCountryNeighboursTour
+spring.security.oauth2.client.registration:
+  google:
+    clientId: 86722349989-mg45u76056vmibs5j14dbb4r8f5elkcm.apps.googleusercontent.com
+    clientSecret: XryhO8Hh1T11CxXTFQV823B3
 feign:
   client:
     config:
